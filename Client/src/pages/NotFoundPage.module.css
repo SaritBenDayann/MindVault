@@ -1,0 +1,328 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    background: linear-gradient(135deg, #0D0F12 0%, #1a1d24 25%, #0D0F12 50%, #1a1d24 75%, #0D0F12 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    z-index: 1;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    color: #fff;
+    padding: 20px;
+  }
+
+  .container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(18, 203, 230, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .content {
+    background: rgba(18, 20, 23, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 4rem 5rem;
+    border: 1px solid rgba(42, 47, 54, 0.6);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: contentSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+    max-width: 600px;
+  }
+
+  @keyframes contentSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 2rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+  
+  .logoIcon {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logoImage {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.8));
+    animation: logoShine 3s ease-in-out infinite;
+  }
+  
+  @keyframes logoShine {
+    0%, 100% {
+      filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.8));
+    }
+    50% {
+      filter: drop-shadow(0 0 18px rgba(0, 229, 255, 1));
+    }
+  }
+  
+  .geometricM {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 3px solid #00E5FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: 
+      radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.1) 0%, transparent 70%),
+      linear-gradient(45deg, transparent 30%, rgba(0, 229, 255, 0.05) 50%, transparent 70%);
+  }
+  
+  .mLetter {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    background: #00E5FF;
+    clip-path: polygon(
+      0% 0%,
+      25% 0%,
+      25% 40%,
+      15% 50%, 
+      25% 60%,
+      25% 100%,
+      75% 100%,
+      75% 60%,
+      85% 50%,
+      75% 40%,
+      75% 0%,
+      100% 0%,
+      100% 100%,
+      0% 100%
+    );
+    filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.6));
+  }
+  
+  .mLetter::before {
+    content: '';
+    position: absolute;
+    top: 65%;
+    left: 30%;
+    width: 40%;
+    height: 20%;
+    background: #00E5FF;
+    clip-path: polygon(
+      0% 0%,
+      50% 50%,
+      100% 0%,
+      100% 100%,
+      0% 100%
+    );
+  }
+  
+  .mLetter::after {
+    content: '';
+    position: absolute;
+    top: 80%;
+    left: 30%;
+    width: 40%;
+    height: 15%;
+    background: #00E5FF;
+    clip-path: polygon(
+      0% 0%,
+      50% 50%,
+      100% 0%,
+      100% 100%,
+      0% 100%
+    );
+  }
+  
+  .logoTextContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .logoText {
+    font-size: 3rem;
+    font-weight: 400;
+    color: #F5F7FA;
+    font-family: 'Poppins', 'Montserrat', 'Source Sans Pro', system-ui, sans-serif;
+    letter-spacing: 4px;
+    text-shadow: 0 0 40px rgba(0, 229, 255, 0.6);
+    position: relative;
+    line-height: 1.1;
+    text-transform: none;
+    font-style: normal;
+  }
+  
+  .logoText::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(0, 229, 255, 0.2) 50%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  
+  .logoTagline {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #00E5FF;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-top: 6px;
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+  }
+  
+  .logo:hover {
+    transform: scale(1.05);
+  }
+  
+  .logo:hover .logoShield {
+    box-shadow: 
+      0 20px 60px rgba(0, 229, 255, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  .title {
+    font-size: 6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00E5FF 0%, #12CBE6 50%, #00E5FF 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    animation: titleShimmer 3s ease-in-out infinite;
+    line-height: 1;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @keyframes titleShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .subtitle {
+    font-size: 1.75rem;
+    color: #F5F7FA;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  
+  .description {
+    font-size: 1.1rem;
+    color: #B0B0B0;
+    margin-bottom: 3rem;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    max-width: 400px;
+  }
+  
+  .button {
+    padding: 18px 32px;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #00E5FF 0%, #12CBE6 50%, #00E5FF 100%);
+    background-size: 200% 200%;
+    color: #0D0F12;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+      0 8px 25px -5px rgba(0, 229, 255, 0.3),
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: buttonShimmer 3s ease-in-out infinite;
+  }
+
+  .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .button:hover {
+    background: linear-gradient(135deg, #12CBE6 0%, #00E5FF 50%, #12CBE6 100%);
+    transform: translateY(-3px);
+    box-shadow: 
+      0 12px 35px -5px rgba(0, 229, 255, 0.4),
+      0 8px 15px -3px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .button:hover::before {
+    left: 100%;
+  }
+
+  .button:active {
+    transform: translateY(-1px);
+    transition: all 0.1s ease;
+  }
+
+  @keyframes buttonShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  

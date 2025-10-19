@@ -1,0 +1,111 @@
+.vaultEntry {
+  background: var(--surface-1, #121417);
+  padding: 20px 24px;
+  border: 1px solid var(--accent-subtle, #00E5FF66);
+  border-radius: var(--radius, 10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: "Inter", "Poppins", sans-serif;
+  box-shadow: none;
+  backdrop-filter: none;
+  overflow: hidden;
+}
+
+.vaultEntry::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent-subtle, #00E5FF66);
+  opacity: 1;
+}
+
+.vaultEntry:hover { border-color: #00E5FF99; box-shadow: 0 0 0 2px var(--accent-subtle, #00E5FF66); transform: translateY(-1px); }
+
+.vaultEntry:hover::before {
+  opacity: 0.6;
+}
+
+.vaultEntry::after { content: none; }
+
+.vaultInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.vaultInfo strong { font-size: 16px; font-weight: 600; color: var(--text, #F5F7FA); letter-spacing: 0.02em; text-transform: uppercase; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+.username { color: var(--text-2, #B3BDC7); font-size: 13px; font-weight: 400; }
+  
+.icon {
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  margin-left: 8px;
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.icon:hover {
+  color: #000;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+.tag {
+  background-color: rgba(255, 255, 255, 0.05); 
+  color: #93c5fd;
+  border: 1px solid rgba(147, 197, 253, 0.3);
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  display: inline-block;
+  text-transform: capitalize;
+  transition: all 0.2s ease-in-out;
+}
+
+.passwordInput {
+  background: var(--surface-2, #1a1d23);
+  border: 1px solid var(--accent-subtle, #00E5FF66);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text, #F5F7FA);
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  min-width: 200px;
+  transition: all 0.2s ease;
+}
+
+.passwordInput:focus {
+  outline: none;
+  border-color: #00E5FF;
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+}
+
+.passwordInput::placeholder {
+  color: var(--text-2, #B3BDC7);
+}
+
+.errorMessage {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+
+
+
