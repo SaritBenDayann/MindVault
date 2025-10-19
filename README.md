@@ -1,5 +1,10 @@
-# MindVault  
-### _Secure Password Manager with Intelligent Breach Detection and Real-Time Monitoring_
+<p align="center">
+  <img src="https://github.com/SaritBenDayann/MindVault/blob/main/Client/src/assets/MindVault-logo%20(2).png?raw=true" alt="MindVault Logo" width="300">
+</p>
+
+<h1 align="center">MindVault – Secure Password Manager</h1>
+
+---
 
 MindVault is a **full-stack, end-to-end encrypted password manager** that combines security, intelligence, and usability.  
 Built with **React (frontend)** and **Flask (backend)**, it provides users with secure credential storage, real-time breach detection, and machine learning–based tagging for seamless organization.
@@ -44,44 +49,20 @@ Built with **React (frontend)** and **Flask (backend)**, it provides users with 
 - Automatically classifies sites into contextual tags.
 - The model can be seamlessly retrained using train_classifier.py with a custom dataset to enhance classification accuracy and adaptability.
 ---
-## BEYOND THE CODE
+## Beyond The Code
 
-MindVault was not built as just another password manager — it was engineered as a **security mindset**.
-Every component, from client-side encryption to real-time event streaming, was designed with one principle in mind:  
-**"Protect what matters without compromising usability."**
+From the very first line of code, **security wasn’t a feature - it was the foundation**.  
+MindVault was engineered around a **security-first mindset**, where every architectural decision, API endpoint, and encryption method was shaped by the question:  
+**“How can this be made safer without making it harder for the user?”**
 
-The development process followed a structured and research-driven approach:
+The development process evolved through a deliberate sequence - each stage reinforcing security as a principle, not a patch:  
+- **Designing the Core:** The project began with defining trust boundaries and zero-knowledge constraints - ensuring that no plaintext data ever touched the backend.  
+- **Building the Architecture:** Flask and React were structured in strict isolation, with encrypted communication and authenticated state transitions.  
+- **Securing Intelligence:** Even the machine learning components were designed to respect privacy - tagging data without ever exposing its content.  
+- **Enabling Real-Time Transparency:** Socket.IO was introduced not just for interactivity, but to **empower users with visibility** - every login, breach check, or vault change is instantly auditable.  
+- **Validating Integrity:** Testing wasn’t about finding bugs - it was about proving that the system could be trusted under pressure.  
 
-### Phase 1 – Foundation
-We began by mapping out threat models and user pain points in existing password managers.  
-The goal was clear — **create a zero-knowledge, self-contained security system** where sensitive data never leaves the user’s control.
-
-### Phase 2 – Architecture & Design
-Using **Flask** for scalability and **React** for responsiveness, we built a two-tier architecture with strict API boundaries.  
-AES-GCM was chosen for encryption due to its proven security and performance.  
-PBKDF2 was implemented for key derivation to resist brute-force attacks.  
-Every request, token, and user action was measured against least-privilege principles.
-
-### Phase 3 – Intelligence Layer
-Security alone wasn’t enough — MindVault integrates **machine learning** to make management smarter, not just safer.  
-A TF-IDF + Logistic Regression model analyzes website descriptions and auto-tags entries into meaningful categories.  
-This allows users to **understand their security landscape** at a glance.
-
-### Phase 4 – Real-Time Experience
-Integrating **Socket.IO** transformed the system from static to dynamic — instant breach alerts, live audit trails, and continuous monitoring.  
-This ensures users are not just storing data securely, but staying informed the moment something changes.
-
-### Phase 5 – Validation & Testing
-Rigorous validation was performed across:
-- **Encryption integrity tests** (ensuring deterministic encryption/decryption).
-- **API rate-limiting** and **token expiration** checks.
-- **Cross-browser performance** to maintain consistent UX under encryption load.
-- **Simulated breach environments** for stress-testing breach detection accuracy.
-
-### Phase 6 – Continuous Evolution
-MindVault is built for growth.  
-Every service and route was modularized for maintainability — allowing future extensions such as **2FA**, **biometric login**, or **cross-device encrypted sync**.
-
+MindVault’s journey reflects a belief that **security isn’t a layer you add - it’s a culture you build**. 
 ---
 ## Tech Stack
 
@@ -123,7 +104,7 @@ Every service and route was modularized for maintainability — allowing future 
 - [ ] **Two-Factor Authentication (2FA)** – Add TOTP-based second-factor verification.  
 - [ ] **Encrypted Vault Export / Import** – Allow secure offline backups.  
 - [ ] **Dark Mode & Accessibility** – Improve UX and visual comfort.  
-- [ ] **Docker Deployment** – Provide ready-to-use Docker Compose configuration.  
+- [ ] **Advanced Cloud Deployment Infrastructure** - Enable fully automated, containerized, and scalable deployment to cloud environments.
 - [ ] **Password Generator** – Add advanced generator with entropy scoring.  
 
 ---
