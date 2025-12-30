@@ -259,6 +259,7 @@ export default function VaultPage({ showForm, setShowForm, searchTerm }) {
             <PasswordForm
               onPasswordSaved={() => {
                 setShowForm(false);
+                loadVaults(true);
               }}
             />
           </div>

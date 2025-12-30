@@ -37,7 +37,7 @@ export default function LoginPage() {
       navigate("/main");
       console.log("Navigating to dashboard...");
     } catch (err) {
-      if (err.response?.status === 401) {
+      if (err.response?.status === 401 || err.response?.status === 404) {
         setError("Invalid email or password. Please check your credentials and try again.");
       } else {
         setError(err.message || "Login failed");
@@ -135,6 +135,8 @@ export default function LoginPage() {
             Register
           </span>
         </p>
+
+        {<button type="submit" style={{ display: "none" }}></button>}
       </form>
     </div>
   );

@@ -14,6 +14,7 @@ export default function PasswordForm({ onPasswordSaved }) {
   const [pwnedWarning, setPwnedWarning] = useState(false);
   const [pwnedCount, setPwnedCount] = useState(0);
   const [allowPwnedSave, setAllowPwnedSave] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +57,8 @@ export default function PasswordForm({ onPasswordSaved }) {
   };
 
   const performSave = async (keyBase64) => {
+    if (isSaving) return;
+    setIsSaving(true);
     try {
       const key = await importKeyFromBase64(keyBase64);
       const encryptedPassword = await encryptWithAES(password, key);
@@ -74,6 +77,8 @@ export default function PasswordForm({ onPasswordSaved }) {
       if (onPasswordSaved) onPasswordSaved();
     } catch (err) {
       setError(err.message || "Failed to save password");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -159,8 +164,8 @@ export default function PasswordForm({ onPasswordSaved }) {
           required
           className={styles.input}
         />
-        <button type="submit" className={styles.button} disabled={checkingPwned}>
-          {checkingPwned ? "Checking..." : "Save Password"}
+        <button type="submit" className={styles.button} disabled={checkingPwned || isSaving}>
+          {checkingPwned ? "Checking..." : isSaving ? "Saving..." : "Save Password"}
         </button>
       </form>
     </div>
