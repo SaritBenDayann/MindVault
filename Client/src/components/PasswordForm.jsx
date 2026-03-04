@@ -3,6 +3,7 @@ import { savePassword, checkPasswordBreach } from "../services/vault";
 import { encryptWithAES, importKeyFromBase64, isValidStrongPassword } from "../utils/CryptoUtils";
 import { checkPasswordPwned } from "../utils/PwnedPasswords";
 import styles from "./PasswordForm.module.css";
+import AIPasswordAssistant from './AIPasswordAssistant';
 
 export default function PasswordForm({ onPasswordSaved }) {
   const [site, setSite] = useState("");
@@ -15,6 +16,7 @@ export default function PasswordForm({ onPasswordSaved }) {
   const [pwnedCount, setPwnedCount] = useState(0);
   const [allowPwnedSave, setAllowPwnedSave] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,6 +76,9 @@ export default function PasswordForm({ onPasswordSaved }) {
       setAllowPwnedSave(false);
       setPwnedWarning(false);
       setPwnedCount(0);
+      
+      sessionStorage.removeItem('ai_chat_history'); 
+      
       if (onPasswordSaved) onPasswordSaved();
     } catch (err) {
       setError(err.message || "Failed to save password");
@@ -140,6 +145,26 @@ export default function PasswordForm({ onPasswordSaved }) {
             </div>
           </div>
         )}
+        <div style={{ marginBottom: '16px' }}>
+        <button
+          type="button"
+          onClick={() => setShowAIAssistant(!showAIAssistant)}
+          className={styles.aiToggleButton}
+        >
+          {showAIAssistant ? "Close AI Assistant" : "✨ Ask AI for a Password"}
+        </button>
+
+        {showAIAssistant && (
+          <AIPasswordAssistant 
+            site={site}
+            username={username}
+            onSelectPassword={(selectedPassword) => {
+              setPassword(selectedPassword); 
+              setShowAIAssistant(false); 
+            }} 
+          />
+        )}
+        </div>
         <input
           type="text"
           placeholder="Site"

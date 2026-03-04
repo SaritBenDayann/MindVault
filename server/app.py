@@ -16,6 +16,7 @@ from db import db
 from datetime import timedelta
 from routes.audit_routes import audit_bp
 from services.socketio_instance import socketio
+from routes.llm_routes import llm_bp
 
 def create_app():
     app = Flask(__name__)
@@ -39,7 +40,8 @@ def create_app():
     app.register_blueprint(vault_bp, url_prefix="/vault")
     app.register_blueprint(audit_bp)
     app.register_blueprint(breach_bp, url_prefix="/breach")
-
+    app.register_blueprint(llm_bp)
+    
     return app
 
 if __name__ == "__main__":

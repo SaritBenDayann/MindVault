@@ -254,3 +254,15 @@ def search_vault_items(query, vault_items):
     ranked_items.sort(key=lambda x: x[1], reverse=True)
 
     return [item for item, _ in ranked_items]
+
+def get_user_vaults(user_email):
+    from flask import current_app
+    db = current_app.db
+    try:
+        # Find all documents where userEmail matches the logged-in user
+        # We only return the 'site' field to minimize data transfer
+        vaults = list(db.vaults.find({"userEmail": user_email}, {"site": 1, "_id": 0}))
+        return vaults
+    except Exception as e:
+        print(f"Database error fetching vaults: {e}")
+        return []

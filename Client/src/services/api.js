@@ -100,3 +100,18 @@ export const updatePassword = async (site, username, encryptedPassword) => {
         return [];
       }
   };
+
+  export const generateAIPassword = async (prompt, site, username, history = []) => {
+    try {
+      const response = await API.post("/api/ai/generate-password", { 
+        prompt, 
+        site, 
+        username, 
+        history 
+      });
+      return response.data.response;
+    } catch (error) {
+      console.error("AI Generation error:", error);
+      throw new Error("Failed to generate password. Please try again.");
+    }
+  };
