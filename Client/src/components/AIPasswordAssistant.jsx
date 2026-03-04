@@ -4,7 +4,6 @@ import ReactMarkdown from 'react-markdown';
 import styles from './AIPasswordAssistant.module.css';
 
 export default function AIPasswordAssistant({ site, username, onSelectPassword }) {
-  // Load chat history from session storage so it remembers preferences even if closed and reopened
   const [messages, setMessages] = useState(() => {
     const savedChat = sessionStorage.getItem('ai_chat_history');
     return savedChat ? JSON.parse(savedChat) : [];
@@ -12,8 +11,6 @@ export default function AIPasswordAssistant({ site, username, onSelectPassword }
   
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Prevent double-fetching in React Strict Mode
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -23,14 +20,16 @@ export default function AIPasswordAssistant({ site, username, onSelectPassword }
     const fetchInitialOrUpdated = async () => {
       setIsLoading(true);
       try {
-        // This prompt runs every time the chat is opened. It includes the CURRENT site and username from the form.
-        const promptToSend = `Please generate a NEW secure password for me right now. I am currently creating a password for the site '${site || 'Unknown'}' and username '${username || 'Unknown'}'. Explain exactly WHY you chose it in a SINGLE, SHORT PARAGRAPH, taking into account any preferences I mentioned in our previous messages.`;
+        // This prompt is sent to the backend but is NEVER shown to the user in the UI.
+        const hiddenPrompt = `The user has opened the assistant. Please generate a NEW secure password specifically tailored to the CURRENT Site and Username provided in your system instructions. Explain your reasoning in ONE short paragraph. Remember past preferences.`;
+
+        // We pass the current visible messages to the API, along with the hidden prompt
+        const aiResponseText = await generateAIPassword(hiddenPrompt, site, username, messages);
         
-        const aiResponseText = await generateAIPassword(promptToSend, site, username, messages);
-        
-        const newMessages = [...messages, { role: 'ai', text: aiResponseText }];
-        setMessages(newMessages);
-        sessionStorage.setItem('ai_chat_history', JSON.stringify(newMessages));
+        // We only add the AI's response to the screen, keeping the hidden prompt invisible
+        const finalMessages = [...messages, { role: 'ai', text: aiResponseText }];
+        setMessages(finalMessages);
+        sessionStorage.setItem('ai_chat_history', JSON.stringify(finalMessages));
       } catch (error) {
         setMessages((prev) => [...prev, { role: 'ai', text: 'Error communicating with the AI.' }]);
       } finally {
@@ -38,10 +37,9 @@ export default function AIPasswordAssistant({ site, username, onSelectPassword }
       }
     };
 
-    // Run immediately when the component mounts (when "Ask AI" is clicked)
     fetchInitialOrUpdated();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array ensures it only runs on mount, NOT on every keystroke
+  }, []); 
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;

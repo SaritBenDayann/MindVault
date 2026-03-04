@@ -21,6 +21,7 @@ Built with **React (frontend)** and **Flask (backend)**, it provides users with 
 - **bcrypt password hashing** for user credentials.
 
 ### Functionality
+- **Smart AI Assistant** – Context-aware password generation powered by an LLM, tailoring highly secure passwords to your unique digital footprint.
 - **Password Vault** – Add, update, delete, and search encrypted credentials.
 - **AI Tagging** – Automatic site categorization using TF-IDF + Logistic Regression trained model.
 - **Breach Watch** – Check your passwords against known data breaches using [Have I Been Pwned](https://haveibeenpwned.com/).
@@ -40,6 +41,7 @@ Built with **React (frontend)** and **Flask (backend)**, it provides users with 
 ### Backend (Flask)
 - RESTful API structured via Blueprints (`auth`, `vault`, `breach`, `audit`).
 - **MongoDB Atlas** for persistent storage.
+- **LLM integration** for personalized, context-driven password recommendations using dynamic prompt engineering.
 - Machine Learning–driven tagging and search (TF-IDF).
 - Asynchronous event broadcasting through Socket.IO.
 - Integration with **HIBP Pwned Passwords API** for breach detection.
@@ -70,9 +72,10 @@ MindVault’s journey reflects a belief that **security isn’t a layer you add 
 |-------|-------------|
 | Frontend | React.js, Vite, Axios, TailwindCSS |
 | Backend | Flask, Flask-SocketIO, PyMongo |
+| AI Integration | Google Gemini API |
+| ML Model | scikit-learn (TF-IDF + Logistic Regression) |
 | Database | MongoDB Atlas |
 | Security | JWT, bcrypt, AES-GCM, PBKDF2 |
-| ML Model | scikit-learn (TF-IDF + Logistic Regression) |
 | Breach API | Have I Been Pwned (k-Anonymity API) |
 
 ---

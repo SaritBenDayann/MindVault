@@ -17,29 +17,23 @@ class LLMService:
         self.model_id = 'gemini-2.5-flash'
 
     def generate_password_suggestion(self, user_prompt, site, username, history, saved_sites, mindvault_email):
-        # Building the context directly from the isolated user data
-        context_msg = f"User's Mind Vault Account Email: '{mindvault_email}'.\n"
+        # Organizing the data into strict variables
+        sites_str = ", ".join(list(set(saved_sites))) if saved_sites else "None yet"
+        target_site = site if site else "Not specified yet"
+        target_username = username if username else "Not specified yet"
         
-        if site or username:
-            context_msg += f"URGENT CONTEXT: The user is CURRENTLY generating a password for the Site: '{site}', with the Username: '{username}'. You MUST tailor the password to this specific site and username.\n"
-        else:
-            context_msg += f"The user hasn't typed a specific site or username yet. Suggest a general strong password based on their profile.\n"
-        
-        if saved_sites:
-            unique_sites = list(set(saved_sites))
-            sites_str = ", ".join(unique_sites)
-            context_msg += f"The user already has accounts on these sites: {sites_str}. Use this to understand their digital footprint.\n"
-
+        # Using a very strict, structured format so the AI cannot ignore the context
         system_instruction = (
-            "You are a smart, personalized security assistant inside the Mind Vault password manager. "
-            "Your role is to help the user generate strong, memorable passwords tailored specifically to them. "
-            "Here is the context for the current user:\n"
-            f"{context_msg}\n"
-            "CRITICAL INSTRUCTIONS:\n"
-            "1. Always wrap the actual generated password in exactly these tags: [PASSWORD]P@ssw0rd123![/PASSWORD]. Do not use these tags for anything else.\n"
-            "2. Explain your reasoning below the password in a SINGLE, SHORT PARAGRAPH. DO NOT use bullet points, numbered lists, or line breaks. Keep it brief, fluid, and concise. Explain how it connects to the requested Site, Username, or past sites.\n"
-            "3. If the user asked for specific preferences in previous messages, you MUST follow those preferences.\n"
-            "Keep your explanation friendly and in English."
+            "You are the Mind Vault AI Security Assistant. Your job is to generate highly personalized, secure passwords. "
+            "You MUST base the password on the following exact user context:\n\n"
+            f"- User's Email: {mindvault_email}\n"
+            f"- Previously Saved Sites: {sites_str}\n"
+            f"- CURRENT Target Site: {target_site}\n"
+            f"- CURRENT Target Username: {target_username}\n\n"
+            "CRITICAL RULES:\n"
+            "1. ALWAYS wrap the generated password in exactly these tags: [PASSWORD]your_password_here[/PASSWORD].\n"
+            "2. EXPLAIN your reasoning in exactly ONE SHORT PARAGRAPH. Explicitly name the specific parts of the Email, Saved Sites, Target Site, or Target Username you used to create the password.\n"
+            "3. If the user stated preferences in previous messages, apply them strictly."
         )
         
         formatted_history = []
@@ -52,7 +46,7 @@ class LLMService:
             
             if not formatted_history and role == 'model':
                 formatted_history.append(
-                    types.Content(role="user", parts=[types.Part.from_text(text="I need a password suggestion based on my profile.")])
+                    types.Content(role="user", parts=[types.Part.from_text(text="I need a password suggestion.")])
                 )
                 
             formatted_history.append(
@@ -78,7 +72,7 @@ class LLMService:
             error_details = str(e)
             print(f"LLM Chat Error Details: {error_details}")
             if "429" in error_details or "RESOURCE_EXHAUSTED" in error_details:
-                return "I am receiving too many requests right now, Please try again later."
+                return "I am receiving too many requests right now, Please wait about a minute and try again."
             return f"Sorry, there was an error communicating with the AI. Details: {error_details}"
 
 llm_service = LLMService()
