@@ -15,7 +15,9 @@ import {
     Settings,
     LogOut,
   } from "lucide-react";
-  
+import { useEffect } from "react";
+import io from "socket.io-client";
+
 export default function MainScreen() {
   const [activePage, setActivePage] = useState(() => {
     const savedActivePage = sessionStorage.getItem('activePage');
@@ -27,6 +29,32 @@ export default function MainScreen() {
   });
   const [showVaultForm, setShowVaultForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) return;
+
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const socket = io(API_URL, {
+      auth: { token: token }
+    });
+
+    socket.on("security_alert", (data) => {
+      console.error("CRITICAL ALERT:", data);
+      
+      if (data.type === "BREACH_DETECTED") {
+        alert(`🚨 SECURITY ALERT 🚨\n\n${data.message}`);
+      }
+    });
+
+    socket.on("connect_error", (err) => {
+      console.log("Socket connection failed:", err.message);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const renderScreen = () => {
     switch (activePage) {

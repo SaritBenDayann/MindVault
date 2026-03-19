@@ -8,3 +8,5 @@ pytz==2024.1
 rich
 scikit-learn>=1.2
 requests>=2.31.0
+redis==5.0.1
+eventlet==0.35.2

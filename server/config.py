@@ -24,3 +24,5 @@ CRYPTO_STATIC_SALT = os.environ.get("CRYPTO_STATIC_SALT")
 if not CRYPTO_STATIC_SALT:
     raise ValueError("CRYPTO_STATIC_SALT environment variable is required")
 CRYPTO_ITERATIONS = int(os.environ.get("CRYPTO_ITERATIONS", "100000"))
+
+REDIS_URI = os.environ.get("REDIS_URI", "redis://localhost:6379/0")

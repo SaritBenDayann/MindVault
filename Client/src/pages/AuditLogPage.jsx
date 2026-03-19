@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
 import API from "../services/api";
 import styles from "./AuditLogPage.module.css";
-
-const socket = io("http://localhost:5000");
 
 export default function AuditLogPage() {
   const [logs, setLogs] = useState([]);

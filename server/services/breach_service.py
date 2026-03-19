@@ -6,6 +6,8 @@ from flask import current_app
 from pymongo.errors import PyMongoError
 from services.audit_service import log_audit_event
 from config import HIBP_PWNED_PASSWORDS_URL, HIBP_RATE_LIMIT_DELAY
+from services.socketio_instance import notify_user
+from db.redis_client import redis_client
 
 class BreachService:
     def __init__(self):
@@ -14,15 +16,25 @@ class BreachService:
         self.last_request_time = 0
 
     def _rate_limit(self):
-        """Ensure we don't exceed API rate limits"""
-        current_time = time.time()
-        time_since_last_request = current_time - self.last_request_time
+        """Ensure we don't exceed API rate limits GLOBALLY across all AWS servers"""
         
-        if time_since_last_request < self.rate_limit_delay:
-            sleep_time = self.rate_limit_delay - time_since_last_request
-            time.sleep(sleep_time)
+        if not redis_client:
+            current_time = time.time()
+            time_since_last_request = current_time - self.last_request_time
+            if time_since_last_request < self.rate_limit_delay:
+                time.sleep(self.rate_limit_delay - time_since_last_request)
+            self.last_request_time = time.time()
+            return
+
+        delay_ms = int(self.rate_limit_delay * 1000)
         
-        self.last_request_time = time.time()
+        while True:
+            lock_acquired = redis_client.set("hibp_api_lock", "locked", nx=True, px=delay_ms)
+            
+            if lock_acquired:
+                break
+            
+            time.sleep(0.1)
 
     def check_password_breach(self, password):
         """Check if a password has been compromised using HIBP's free Pwned Passwords API"""
@@ -135,6 +147,17 @@ class BreachService:
                 db.password_breach_data.insert_one(breach_record)
             
             log_audit_event(user_email, f"password_breach_check_completed:{site}:{username}")
+            
+            # Send real-time socket alert if a breach is detected
+            if breach_data.get("is_breached"):
+                print(f"Alerting user {user_email} about breach on {site}")
+                notify_user(user_email, "security_alert", {
+                    "type": "BREACH_DETECTED",
+                    "site": site,
+                    "username": username,
+                    "message": f"Critical: Your password for {site} was found in {breach_data.get('breach_count')} data breaches!"
+                })
+
             return {"message": "Password breach data stored successfully"}, 200
             
         except PyMongoError as e:
