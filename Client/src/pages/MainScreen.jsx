@@ -17,6 +17,7 @@ import {
   } from "lucide-react";
 import { useEffect } from "react";
 import io from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 export default function MainScreen() {
   const [activePage, setActivePage] = useState(() => {
@@ -29,6 +30,7 @@ export default function MainScreen() {
   });
   const [showVaultForm, setShowVaultForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
@@ -83,7 +85,10 @@ export default function MainScreen() {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      window.location.href = "/login";
+      sessionStorage.removeItem("authToken");
+      sessionStorage.removeItem("masterKey");
+      
+      navigate("/login");
     }
   };
 
