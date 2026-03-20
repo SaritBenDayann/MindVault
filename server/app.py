@@ -34,7 +34,9 @@ def create_app():
         app,
         origins=[
             "http://localhost:5173", 
-            "https://mindvault-your-project.vercel.app"
+            "https://mind-vault-taupe.vercel.app",
+            "https://mind-vault-git-main-saritbendayanns-projects.vercel.app",
+            "https://mind-vault-379axwd0x-saritbendayanns-projects.vercel.app"
         ],
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
