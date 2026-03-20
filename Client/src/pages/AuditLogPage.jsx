@@ -10,8 +10,6 @@ export default function AuditLogPage() {
   const [selectedDays, setSelectedDays] = useState(0); 
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   const handleAuthFailure = () => {
     sessionStorage.removeItem("authToken");
     sessionStorage.removeItem("masterKey");
@@ -24,18 +22,26 @@ export default function AuditLogPage() {
   };
 
   useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     const socket = io(API_URL, {
       auth: { token: sessionStorage.getItem("authToken") }
     });
-    
+
     const fetchLogs = async () => {
       try {
+        const token = sessionStorage.getItem("authToken");
+        console.log("Auth token exists:", !!token);
+        
+        console.log(`Fetching audit logs for ${selectedDays} days (type: ${typeof selectedDays})`);
         const url = `/audit/logs/recent?days=${selectedDays}`;
+        console.log(`API URL: ${url}`);
         const { data } = await API.get(url);
-        const logsArray = Array.isArray(data) ? data : (data?.logs || []);
-        setLogs(logsArray);
+        console.log(`Received ${data.length} logs`);
+        setLogs(data);
       } catch (error) {
+        console.error("Failed to fetch audit logs:", error);
         if (error.response?.status === 401) {
+          console.error("Authentication failed - redirecting to login");
           handleAuthFailure();
           return; 
         }
@@ -46,7 +52,7 @@ export default function AuditLogPage() {
     fetchLogs();
   
     socket.on("audit_log", (data) => {
-      if (!data) return;
+      console.log("Received log:", data);
       try {
         const logTime = new Date(data.timestamp);
         const cutoff = new Date(Date.now() - (selectedDays * 24 * 60 * 60 * 1000));
@@ -63,10 +69,9 @@ export default function AuditLogPage() {
       socket.off("audit_log");
       socket.disconnect();
     };
-  }, [selectedDays, API_URL]);
+  }, [selectedDays]);
   
   const formatDate = (timestamp) => {
-    if (!timestamp) return "N/A";
     try {
       const date = new Date(timestamp);
       return date.toLocaleString('he-IL', {
@@ -80,12 +85,14 @@ export default function AuditLogPage() {
         timeZoneName: 'short'
       });
     } catch (error) {
+      console.error('Error formatting date:', error);
       return new Date(timestamp).toLocaleString();
     }
   };
+  
+
 
   const getActionColor = (action) => {
-    if (!action) return '#94a3b8';
     const actionLower = action.toLowerCase();
     if (actionLower.includes('login')) return '#4ade80';
     if (actionLower.includes('logout')) return '#f87171';
@@ -99,7 +106,6 @@ export default function AuditLogPage() {
   };
 
   const getTimeAgo = (timestamp) => {
-    if (!timestamp) return 'Unknown';
     try {
       const now = new Date();
       const logTime = new Date(timestamp);
@@ -110,19 +116,21 @@ export default function AuditLogPage() {
       if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
       return `${Math.floor(diffInSeconds / 86400)}d ago`;
     } catch (error) {
+      console.error('Error calculating time ago:', error);
       return 'Unknown';
     }
   };
 
-  const formatActionText = (action = "") => {
-    if (!action) return { action: "Unknown", details: null };
-    
+  const formatActionText = (action) => {
     if (action.includes('password_added:')) {
       const parts = action.split(':');
       if (parts.length > 1) {
         const siteUser = parts[1];
         const [site, username] = siteUser.split('/');
-        return { action: 'Password Added', details: `${site} (${username})` };
+        return {
+          action: 'Password Added',
+          details: `${site} (${username})`
+        };
       }
     }
     
@@ -131,7 +139,10 @@ export default function AuditLogPage() {
       if (parts.length > 1) {
         const siteUser = parts[1];
         const [site, username] = siteUser.split('/');
-        return { action: 'Password Updated', details: `${site} (${username})` };
+        return {
+          action: 'Password Updated',
+          details: `${site} (${username})`
+        };
       }
     }
     
@@ -140,7 +151,10 @@ export default function AuditLogPage() {
       if (parts.length > 1) {
         const siteUser = parts[1];
         const [site, username] = siteUser.split('/');
-        return { action: 'Password Deleted', details: `${site} (${username})` };
+        return {
+          action: 'Password Deleted',
+          details: `${site} (${username})`
+        };
       }
     }
     
@@ -149,7 +163,10 @@ export default function AuditLogPage() {
       if (parts.length > 1) {
         const siteUser = parts[1];
         const [site, username] = siteUser.split('/');
-        return { action: 'Password Revealed', details: `${site} (${username})` };
+        return {
+          action: 'Password Revealed',
+          details: `${site} (${username})`
+        };
       }
     }
     
@@ -162,11 +179,10 @@ export default function AuditLogPage() {
   const filteredLogs = logs.filter(log => {
     const safeUser = log?.user || "";
     const safeAction = log?.action || "";
-    const safeSearchTerm = searchTerm.toLowerCase();
-
+    
     const matchesSearch = searchTerm === "" || 
-      safeUser.toLowerCase().includes(safeSearchTerm) ||
-      safeAction.toLowerCase().includes(safeSearchTerm);
+      safeUser.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      safeAction.toLowerCase().includes(searchTerm.toLowerCase());
     
     return matchesSearch;
   });
@@ -225,9 +241,9 @@ export default function AuditLogPage() {
         ) : (
           <div className={styles.logsList}>
             {filteredLogs.map((log, idx) => {
-              const formattedAction = formatActionText(log?.action);
+              const formattedAction = formatActionText(log?.action || "");
               return (
-                <div key={log?._id || idx} className={styles.logEntry}>
+                <div key={idx} className={styles.logEntry}>
                   <div className={styles.logContent}>
                     <div className={styles.logHeader}>
                       <div className={styles.logActionContainer}>
@@ -236,12 +252,12 @@ export default function AuditLogPage() {
                           <span className={styles.logActionDetails}>{formattedAction.details}</span>
                         )}
                       </div>
-                      <span className={styles.logTime}>{getTimeAgo(log?.timestamp)}</span>
+                      <span className={styles.logTime}>{getTimeAgo(log.timestamp)}</span>
                     </div>
                     <div className={styles.logDetails}>
-                      <span className={styles.logUser}>👤 {log?.user || "Unknown"}</span>
-                      <span className={styles.logTimestamp}>🕒 {formatDate(log?.timestamp)}</span>
-                      {log?.ip && <span className={styles.logIp}>🌐 {log.ip}</span>}
+                      <span className={styles.logUser}>👤 {log.user}</span>
+                      <span className={styles.logTimestamp}>🕒 {formatDate(log.timestamp)}</span>
+                      {log.ip && <span className={styles.logIp}>🌐 {log.ip}</span>}
                     </div>
                   </div>
                   <div className={styles.logStatus}>
