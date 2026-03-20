@@ -32,7 +32,10 @@ def create_app():
 
     CORS(
         app,
-        origins=["http://localhost:5173"],
+        origins=[
+            "http://localhost:5173", 
+            "https://mindvault-your-project.vercel.app"
+        ],
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
