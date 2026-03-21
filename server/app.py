@@ -98,8 +98,6 @@ def create_app():
     app.register_blueprint(breach_bp, url_prefix="/breach")
     app.register_blueprint(llm_bp)
     
-    return app
-
     @app.route("/", methods=["GET"])
     def health_check():
         return jsonify({
