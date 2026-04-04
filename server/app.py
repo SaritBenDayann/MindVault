@@ -32,7 +32,9 @@ def create_app():
         app,
         origins=[
             "http://localhost:5173", 
-            "https://mindvault-security.vercel.app"
+            "https://mindvault-security.vercel.app",
+            "https://mindvault-security.com",
+            "https://www.mindvault-security.com"
         ],
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
