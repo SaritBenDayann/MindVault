@@ -1,8 +1,27 @@
 import os
+import boto3
 from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+
+def load_secrets_from_aws():
+    ssm = boto3.client('ssm', region_name='eu-central-1')
+    try:
+        response = ssm.get_parameters_by_path(
+            Path='/mindvault/prod/',
+            WithDecryption=True
+        )
+
+        for param in response['Parameters']:
+            key = param['Name'].split('/')[-1]
+            os.environ[key] = param['Value']
+
+        print("Secrets loaded securely from AWS SSM!")
+    except Exception as e:
+        print(f"Failed to load secrets from AWS (using local environment instead): {e}")
+
+load_secrets_from_aws()
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 if not SECRET_KEY:
