@@ -28,6 +28,7 @@ def create_app():
 
     app.db = db
 
+
     CORS(
         app,
         origins=[
