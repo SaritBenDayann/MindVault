@@ -9,7 +9,7 @@ services:
     restart: always
 
   backend:
-    build: ./server  # ודאי שזה השם של תיקיית השרת שלך
+    build: ./server
     container_name: mindvault-backend
     ports:
       - "5000:5000"
@@ -17,6 +17,4 @@ services:
       - redis
     environment:
       - REDIS_URI=redis://redis:6379/0
-    env_file:
-      - ./server/.env
     restart: always
