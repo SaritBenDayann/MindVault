@@ -8,7 +8,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
-# הוספנו פה את ה-request
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from config import SECRET_KEY, CORS_ALLOWED_ORIGINS, JWT_ALGORITHM, JWT_EXPIRATION_DELTA
@@ -29,7 +28,6 @@ def create_app():
 
     app.db = db
 
-    # 1. הגדרת CORS מעודכנת עם resources
     CORS(
         app,
         resources={
@@ -47,7 +45,6 @@ def create_app():
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
 
-    # 2. מידלוור "כוח ברוטאלי" להזרקת Headers באופן ידני
     @app.after_request
     def after_request_func(response):
         origin = request.headers.get('Origin')
