@@ -8,7 +8,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
-from flask import Flask, jsonify
+# הוספנו פה את ה-request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from config import SECRET_KEY, CORS_ALLOWED_ORIGINS, JWT_ALGORITHM, JWT_EXPIRATION_DELTA
 from routes import auth_bp, vault_bp
@@ -28,19 +29,41 @@ def create_app():
 
     app.db = db
 
-
+    # 1. הגדרת CORS מעודכנת עם resources
     CORS(
         app,
-        origins=[
-            "http://localhost:5173", 
-            "https://mindvault-security.vercel.app",
-            "https://mindvault-security.com",
-            "https://www.mindvault-security.com"
-        ],
+        resources={
+            r"/*": {
+                "origins": [
+                    "http://localhost:5173", 
+                    "https://mindvault-security.vercel.app",
+                    "https://mindvault-security.com",
+                    "https://www.mindvault-security.com"
+                ]
+            }
+        },
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
+
+    # 2. מידלוור "כוח ברוטאלי" להזרקת Headers באופן ידני
+    @app.after_request
+    def after_request_func(response):
+        origin = request.headers.get('Origin')
+        if origin in [
+            "http://localhost:5173", 
+            "https://mindvault-security.vercel.app",
+            "https://mindvault-security.com",
+            "https://www.mindvault-security.com"
+        ]:
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        
+        return response
+
     socketio.init_app(app, cors_allowed_origins="*")
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -61,4 +84,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    socketio.run(app, debug=True, host="0.0.0.0", port=5000) 
+    socketio.run(app, debug=True, host="0.0.0.0", port=5000)
